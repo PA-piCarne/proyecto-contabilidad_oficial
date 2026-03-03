@@ -1,0 +1,91 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.14);
+    --glass-bg-strong: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --glass-shadow: 0 10px 35px rgba(15, 23, 42, 0.35);
+    --glass-radius: 20px;
+    --text-on-glass: #ffffff;
+    --text-soft: rgba(255, 255, 255, 0.88);
+}
+
+/* 1) Contenedor principal (efecto espejo/cristal) */
+.glass-container,
+.container,
+.box,
+.card,
+.menu-box,
+.navbar,
+.table-container,
+.layout > .card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-radius);
+    box-shadow: var(--glass-shadow);
+    color: var(--text-on-glass);
+}
+
+h1, h2, h3, h4, h5, h6, p, label, th, td {
+    color: var(--text-on-glass);
+}
+
+/* 2) Botones glass transparentes */
+button,
+.btn,
+.option-btn,
+.nav-buttons a,
+a.btn {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.85) !important;
+    color: var(--text-on-glass) !important;
+    border-radius: 999px !important;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+button:hover,
+.btn:hover,
+.option-btn:hover,
+.nav-buttons a:hover,
+a.btn:hover {
+    background: var(--glass-bg-strong) !important;
+    color: #ffffff !important;
+}
+
+/* 3) Inputs y tablas */
+input,
+select,
+textarea {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    border-radius: 14px !important;
+    color: var(--text-on-glass) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-soft);
+}
+
+#tablaRolPagos,
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+table th,
+table td,
+#tablaRolPagos th,
+#tablaRolPagos td {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    color: var(--text-on-glass) !important;
+}
+
+/* Links secundarios */
+a {
+    color: var(--text-on-glass);
+}

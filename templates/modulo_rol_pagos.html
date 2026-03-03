@@ -1,0 +1,430 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Rol de Pagos</title>
+    <style>
+        :root {
+            --header-main: #f39c12;
+            --header-sub: #ffd166;
+            --hours-color: #d9f3c8;
+            --totals-color: #fff1a6;
+            --panel-bg: rgba(255, 255, 255, 0.92);
+            --line-color: #b3b3b3;
+            --body-bg: #f2f5fb;
+            --text-main: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--body-bg) url("{% static 'img/fondo2.jpg' %}") center / cover no-repeat fixed;
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: var(--text-main);
+            padding: 24px;
+        }
+
+        .panel {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.58);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .panel h2,
+        .panel p { color: #fff; }
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1850px;
+        }
+
+        th, td {
+            border: 1px solid var(--line-color);
+            padding: 6px;
+            text-align: center;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        tbody td,
+        tfoot td {
+            color: #222;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        thead th {
+            background: var(--header-main);
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .subheader th { background: var(--header-sub); font-size: 12px; }
+        .hours-column, .hours-column input { background: var(--hours-color); }
+        .total-cell, .total-cell input, .totales-row td { background: var(--totals-color); font-weight: 700; }
+        .readonly-text { background: #efefef; font-weight: 600; }
+
+        input[type="number"] {
+            width: 100%; border: 1px solid #c5c5c5; border-radius: 4px; padding: 5px;
+            text-align: right; font-size: 12px; background: #fff;
+        }
+        input[readonly] { background: #efefef; border-color: #c9c9c9; font-weight: 700; }
+
+        .actions {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            margin-top: 14px; flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none; border-radius: 8px; padding: 10px 18px; cursor: pointer;
+            font-weight: 700; text-decoration: none; display: inline-block;
+        }
+
+        .btn-save { background: #168941; color: #fff; }
+        .btn-back { background: #3f51b5; color: #fff; }
+
+        #resultadoEnvio {
+            width: 100%; min-height: 120px; margin-top: 10px; border-radius: 8px;
+            border: 1px solid #ccc; padding: 10px; font-family: Consolas, monospace;
+            font-size: 12px; display: none; background: #fbfbfb;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/glassmorphism.css' %}">
+</head>
+<body>
+    <div class="panel">
+        <h2>Rol de Pagos - Nómina (Ecuador)</h2>
+        <p>Empleados sincronizados desde el módulo de empleados con cálculo automático por fila.</p>
+
+        <div class="table-container">
+            <table id="tablaRolPagos">
+                <thead>
+                    <tr>
+                        <th rowspan="2">N°</th>
+                        <th rowspan="2">Apellidos y Nombres</th>
+                        <th rowspan="2">Cargo</th>
+                        <th colspan="9">INGRESOS</th>
+                        <th colspan="6">EGRESOS</th>
+                        <th rowspan="2">LÍQUIDO A PAGAR</th>
+                    </tr>
+                    <tr class="subheader">
+                        <th>Sueldo Base</th>
+                        <th>Bonificación</th>
+                        <th>Transporte</th>
+                        <th>Alimentación</th>
+                        <th>Décimos</th>
+                        <th>Fondos Reserva</th>
+                        <th>Vacaciones</th>
+                        <th class="hours-column">Horas Extras</th>
+                        <th class="total-cell">Total Ingresos</th>
+                        <th class="total-cell">Aporte IESS 9.45%</th>
+                        <th>Préstamos</th>
+                        <th>Impuesto Renta</th>
+                        <th>Seguro</th>
+                        <th>Comisariato</th>
+                        <th class="total-cell">Total Egresos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                    <tr data-id="{{ empleado.id }}" data-cedula="{{ empleado.cedula_pasaporte }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td class="readonly-text">{{ empleado.apellidos_nombres }}</td>
+                        <td class="readonly-text">{{ empleado.cargo }}</td>
+                        <td><input type="number" step="0.01" class="sueldo" value="{{ empleado.sueldo }}" readonly></td>
+                        <td><input type="number" step="0.01" class="calc bonificacion" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc transporte" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc alimentacion" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc decimos" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc fondos" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc vacaciones" value="0"></td>
+                        <td class="hours-column"><input type="number" step="0.01" class="calc horas" value="0"></td>
+                        <td class="total-cell"><input type="number" step="0.01" class="total-ingresos" readonly></td>
+                        <td class="total-cell"><input type="number" step="0.01" class="aporte" readonly></td>
+                        <td><input type="number" step="0.01" class="calc prestamo" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc renta" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc seguro" value="0"></td>
+                        <td><input type="number" step="0.01" class="calc comisariato" value="0"></td>
+                        <td class="total-cell"><input type="number" step="0.01" class="total-egresos" readonly></td>
+                        <td class="total-cell"><input type="number" step="0.01" class="liquido" readonly></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="19">No existen empleados registrados para generar el rol de pagos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="totales-row" id="filaTotales">
+                        <td colspan="3">TOTALES</td>
+                        <td id="tot-sueldo">0.00</td>
+                        <td id="tot-bonificacion">0.00</td>
+                        <td id="tot-transporte">0.00</td>
+                        <td id="tot-alimentacion">0.00</td>
+                        <td id="tot-decimos">0.00</td>
+                        <td id="tot-fondos">0.00</td>
+                        <td id="tot-vacaciones">0.00</td>
+                        <td id="tot-horas">0.00</td>
+                        <td id="tot-ingresos">0.00</td>
+                        <td id="tot-aporte">0.00</td>
+                        <td id="tot-prestamo">0.00</td>
+                        <td id="tot-renta">0.00</td>
+                        <td id="tot-seguro">0.00</td>
+                        <td id="tot-comisariato">0.00</td>
+                        <td id="tot-egresos">0.00</td>
+                        <td id="tot-liquido">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button id="btnGuardar" class="btn btn-save" type="button">Guardar Rol</button>
+            <a href="{% url 'menu_principal' %}" class="btn btn-back">← Volver al menú principal</a>
+        </div>
+
+        <textarea id="resultadoEnvio" readonly></textarea>
+    </div>
+
+    <script>
+        const tabla = document.getElementById('tablaRolPagos');
+        const STORAGE_KEY = 'nomina_sueldos_empleados';
+        const filasBody = () => tabla.querySelectorAll('tbody tr[data-id]');
+
+        const toNumber = (value) => {
+            const normalized = String(value || '')
+                .replace(',', '.')
+                .replace(/[^\d.-]/g, '');
+            return Number.parseFloat(normalized) || 0;
+        };
+        const formatMoney = (value) => Number(value).toFixed(2);
+
+        const columnasTotales = {
+            sueldo: 'tot-sueldo', bonificacion: 'tot-bonificacion', transporte: 'tot-transporte',
+            alimentacion: 'tot-alimentacion', decimos: 'tot-decimos', fondos: 'tot-fondos',
+            vacaciones: 'tot-vacaciones', horas: 'tot-horas', totalIngresos: 'tot-ingresos',
+            aporteIess: 'tot-aporte', prestamo: 'tot-prestamo', renta: 'tot-renta',
+            seguro: 'tot-seguro', comisariato: 'tot-comisariato', totalEgresos: 'tot-egresos',
+            liquido: 'tot-liquido'
+        };
+
+        function cargarSueldos() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function guardarSueldos(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function obtenerIdentificadorSueldo(fila) {
+            return String(fila.dataset.id || fila.dataset.cedula || '');
+        }
+
+        function hidratarSueldosDesdeStorage() {
+            const sueldosGuardados = cargarSueldos();
+
+            filasBody().forEach((fila) => {
+                const id = obtenerIdentificadorSueldo(fila);
+                const sueldoInput = fila.querySelector('.sueldo');
+
+                if (!id || !sueldoInput) {
+                    return;
+                }
+
+                const sueldoGuardado = toNumber(sueldosGuardados[id]?.sueldo);
+                if (sueldoGuardado > 0) {
+                    sueldoInput.value = formatMoney(sueldoGuardado);
+                }
+            });
+        }
+
+        function persistirSueldosDesdeTabla() {
+            const sueldos = cargarSueldos();
+
+            filasBody().forEach((fila) => {
+                const id = obtenerIdentificadorSueldo(fila);
+                if (!id) {
+                    return;
+                }
+
+                sueldos[id] = {
+                    empleado_id: Number(fila.dataset.id),
+                    cedula_pasaporte: fila.dataset.cedula || '',
+                    sueldo: toNumber(fila.querySelector('.sueldo')?.value)
+                };
+            });
+
+            guardarSueldos(sueldos);
+        }
+
+        function calcularFila(fila) {
+            const sueldo = toNumber(fila.querySelector('.sueldo').value);
+            const bonificacion = toNumber(fila.querySelector('.bonificacion').value);
+            const transporte = toNumber(fila.querySelector('.transporte').value);
+            const alimentacion = toNumber(fila.querySelector('.alimentacion').value);
+            const decimos = toNumber(fila.querySelector('.decimos').value);
+            const fondos = toNumber(fila.querySelector('.fondos').value);
+            const vacaciones = toNumber(fila.querySelector('.vacaciones').value);
+            const horas = toNumber(fila.querySelector('.horas').value);
+            const prestamo = toNumber(fila.querySelector('.prestamo').value);
+            const renta = toNumber(fila.querySelector('.renta').value);
+            const seguro = toNumber(fila.querySelector('.seguro').value);
+            const comisariato = toNumber(fila.querySelector('.comisariato').value);
+
+            const aporteIess = (sueldo + bonificacion + horas) * 0.0945;
+            const totalIngresos = sueldo + bonificacion + transporte + alimentacion + decimos + fondos + vacaciones + horas;
+            const totalEgresos = aporteIess + prestamo + renta + seguro + comisariato;
+            const liquido = totalIngresos - totalEgresos;
+
+            fila.querySelector('.aporte').value = formatMoney(aporteIess);
+            fila.querySelector('.total-ingresos').value = formatMoney(totalIngresos);
+            fila.querySelector('.total-egresos').value = formatMoney(totalEgresos);
+            fila.querySelector('.liquido').value = formatMoney(liquido);
+
+            return {
+                sueldo, bonificacion, transporte, alimentacion, decimos, fondos, vacaciones, horas,
+                totalIngresos, aporteIess, prestamo, renta, seguro, comisariato, totalEgresos, liquido
+            };
+        }
+
+        function calcularTotales() {
+            const acumulados = {
+                sueldo: 0, bonificacion: 0, transporte: 0, alimentacion: 0, decimos: 0, fondos: 0,
+                vacaciones: 0, horas: 0, totalIngresos: 0, aporteIess: 0, prestamo: 0,
+                renta: 0, seguro: 0, comisariato: 0, totalEgresos: 0, liquido: 0
+            };
+
+            filasBody().forEach((fila) => {
+                const resultado = calcularFila(fila);
+                Object.keys(acumulados).forEach((key) => {
+                    acumulados[key] += resultado[key];
+                });
+            });
+
+            Object.keys(columnasTotales).forEach((key) => {
+                document.getElementById(columnasTotales[key]).textContent = formatMoney(acumulados[key]);
+            });
+        }
+
+        tabla.addEventListener('input', (event) => {
+            if (!event.target.classList.contains('calc')) {
+                return;
+            }
+            calcularTotales();
+        });
+
+        function getCsrfToken() {
+            const cookies = document.cookie ? document.cookie.split(';') : [];
+            for (const cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return decodeURIComponent(value);
+                }
+            }
+            return '';
+        }
+
+        document.getElementById('btnGuardar').addEventListener('click', async () => {
+            const detalle = [];
+
+            filasBody().forEach((fila) => {
+                const resultado = calcularFila(fila);
+                const celdas = fila.querySelectorAll('td');
+
+                detalle.push({
+                    empleado_id: Number(fila.dataset.id),
+                    numero: Number(celdas[0].textContent.trim()),
+                    apellidos_nombres: celdas[1].textContent.trim(),
+                    cargo: celdas[2].textContent.trim(),
+                    sueldo: resultado.sueldo,
+                    bonificacion: resultado.bonificacion,
+                    transporte: resultado.transporte,
+                    alimentacion: resultado.alimentacion,
+                    decimos: resultado.decimos,
+                    fondos_reserva: resultado.fondos,
+                    vacaciones: resultado.vacaciones,
+                    horas_extras: resultado.horas,
+                    total_ingresos: Number(formatMoney(resultado.totalIngresos)),
+                    aporte_iess: Number(formatMoney(resultado.aporteIess)),
+                    prestamos: resultado.prestamo,
+                    impuesto_renta: resultado.renta,
+                    seguro: resultado.seguro,
+                    comisariato: resultado.comisariato,
+                    total_egresos: Number(formatMoney(resultado.totalEgresos)),
+                    liquido_pagar: Number(formatMoney(resultado.liquido))
+                });
+            });
+
+            const payload = {
+                detalle,
+                totales: {
+                    sueldo: toNumber(document.getElementById('tot-sueldo').textContent),
+                    bonificacion: toNumber(document.getElementById('tot-bonificacion').textContent),
+                    transporte: toNumber(document.getElementById('tot-transporte').textContent),
+                    alimentacion: toNumber(document.getElementById('tot-alimentacion').textContent),
+                    decimos: toNumber(document.getElementById('tot-decimos').textContent),
+                    fondos: toNumber(document.getElementById('tot-fondos').textContent),
+                    vacaciones: toNumber(document.getElementById('tot-vacaciones').textContent),
+                    horas: toNumber(document.getElementById('tot-horas').textContent),
+                    ingresos: toNumber(document.getElementById('tot-ingresos').textContent),
+                    aporte_iess: toNumber(document.getElementById('tot-aporte').textContent),
+                    prestamos: toNumber(document.getElementById('tot-prestamo').textContent),
+                    renta: toNumber(document.getElementById('tot-renta').textContent),
+                    seguro: toNumber(document.getElementById('tot-seguro').textContent),
+                    comisariato: toNumber(document.getElementById('tot-comisariato').textContent),
+                    egresos: toNumber(document.getElementById('tot-egresos').textContent),
+                    liquido: toNumber(document.getElementById('tot-liquido').textContent)
+                }
+            };
+
+            const salida = document.getElementById('resultadoEnvio');
+            salida.style.display = 'block';
+            salida.value = JSON.stringify(payload, null, 2);
+
+            try {
+                const response = await fetch("{% url 'guardar_rol_pagos' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'No se pudo guardar el rol.');
+                }
+
+                alert(data.message);
+            } catch (error) {
+                alert(`Error al guardar rol: ${error.message}`);
+            }
+        });
+
+        hidratarSueldosDesdeStorage();
+        calcularTotales();
+        persistirSueldosDesdeTabla();
+    </script>
+</body>
+</html>
