@@ -17,20 +17,65 @@
             color: #fff;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1180px;
             margin: 0 auto;
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(12px);
-            background: linear-gradient(135deg, rgba(140, 0, 255, 0.5), rgba(255, 0, 200, 0.45));
+            padding: 15px;
+        }
+        .toolbar {
+            margin-bottom: 15px;
+        }
+        .invoice-paper {
+            border-radius: 16px;
+            padding: 24px;
+            background: #ffffff;
+            color: #222;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
         }
-        .header-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .box { border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; padding: 12px; background: rgba(0,0,0,0.2); }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid rgba(255,255,255,0.35); padding: 8px; font-size: 14px; }
-        p { font-size: 14px; }
-        .totales { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .invoice-title {
+            margin: 0 0 15px;
+            color: #222;
+            font-size: 28px;
+        }
+        .header-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .box {
+            border: 1px solid #b7b7b7;
+            border-radius: 12px;
+            padding: 14px;
+            background: #f8f8f8;
+            min-height: 230px;
+        }
+        .box h3 {
+            margin-top: 0;
+            color: #222;
+            font-size: 30px;
+        }
+        .box p {
+            font-size: 20px;
+            margin: 10px 0;
+            color: #2d2d2d;
+        }
+        .long-text {
+            font-family: monospace;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            font-size: 17px !important;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 18px; color: #222; }
+        th, td { border: 1px solid #b7b7b7; padding: 9px; font-size: 14px; }
+        th { background: #efefef; }
+        .totales {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .totales .box {
+            min-height: auto;
+        }
         .btn {
             border: none;
             border-radius: 12px;
@@ -44,32 +89,47 @@
             margin-bottom: 10px;
             font-size: 14px;
         }
+        @media (max-width: 1100px) {
+            .header-grid, .totales {
+                grid-template-columns: 1fr;
+            }
+            .box {
+                min-height: auto;
+            }
+        }
         @media print {
-            @page { size: auto; margin: 10mm; }
+            @page { size: A4 portrait; margin: 10mm; }
             html, body {
                 background: #fff !important;
-                color: #000 !important;
+                color: #111 !important;
                 padding: 0;
                 margin: 0;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                -webkit-print-color-adjust: economy;
+                print-color-adjust: economy;
+            }
+            * {
+                color: #111 !important;
             }
             .container {
                 max-width: none;
                 width: 100%;
-                background: #fff !important;
-                color: #000 !important;
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0;
             }
-            .btn { display: none; }
+            .toolbar,
+            .btn { display: none !important; }
+            .invoice-paper {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+            }
             .box {
-                border-color: #000;
+                border-color: #111;
                 background: #fff;
                 break-inside: avoid;
             }
-            th, td { border-color: #000; }
+            th, td { border-color: #111; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; }
         }
@@ -77,69 +137,75 @@
 </head>
 <body>
 <div class="container">
-    <h1>Factura Electrónica</h1>
-
-    <a href="{% url 'buscar_factura' %}" class="btn">Buscar más facturas</a>
-    <a href="{% url 'menu_principal' %}" class="btn">Volver al menú</a>
-    <button class="btn" onclick="window.print()">Imprimir factura</button>
-
-    <div class="header-grid">
-        <div class="box">
-            <h3>Emisor</h3>
-            <p><strong>Razón social:</strong> {{ factura.razon_social }}</p>
-            <p><strong>RUC:</strong> {{ factura.ruc }}</p>
-            <p><strong>Dirección:</strong> {{ factura.direccion }}</p>
-        </div>
-        <div class="box">
-            <h3>Comprobante</h3>
-            <p><strong>Número:</strong> {{ factura.numero_factura }}</p>
-            <p><strong>Fecha emisión:</strong> {{ factura.fecha_emision }}</p>
-            <p><strong>Autorización:</strong> {{ factura.numero_autorizacion }}</p>
-            <p><strong>Clave acceso:</strong> {{ factura.clave_acceso }}</p>
-        </div>
-        <div class="box">
-            <h3>Cliente</h3>
-            <p><strong>Nombre:</strong> {{ factura.cliente_nombre }}</p>
-            <p><strong>Identificación:</strong> {{ factura.cliente_identificacion }}</p>
-            <p><strong>Dirección:</strong> {{ factura.cliente_direccion }}</p>
-            <p><strong>Correo:</strong> {{ factura.correo }}</p>
-        </div>
+    <div class="toolbar">
+        <a href="{% url 'buscar_factura' %}" class="btn">Buscar más facturas</a>
+        <a href="{% url 'menu_principal' %}" class="btn">Volver al menú</a>
+        <button class="btn" onclick="window.print()">Imprimir factura</button>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th>Cantidad</th>
-            <th>P. Unitario</th>
-            <th>Descuento</th>
-            <th>Total sin Impuestos</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for detalle in detalles %}
-        <tr>
-            <td>{{ detalle.codigo }}</td>
-            <td>{{ detalle.descripcion }}</td>
-            <td>{{ detalle.cantidad }}</td>
-            <td>${{ detalle.precio_unitario }}</td>
-            <td>${{ detalle.descuento }}</td>
-            <td>${{ detalle.total_sin_impuestos }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6">Sin productos.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="invoice-paper">
+        <h1 class="invoice-title">Factura Electrónica</h1>
 
-    <div class="totales">
-        <div class="box"><strong>Subtotal 0%:</strong> ${{ factura.subtotal_0 }}</div>
-        <div class="box"><strong>Subtotal 12%:</strong> ${{ factura.subtotal_12 }}</div>
-        <div class="box"><strong>IVA 12%:</strong> ${{ factura.iva }}</div>
-        <div class="box"><strong>Descuento total:</strong> ${{ factura.total_descuento }}</div>
-        <div class="box"><strong>Total:</strong> ${{ factura.total }}</div>
-        <div class="box"><strong>Forma pago:</strong> {{ factura.forma_pago }} ({{ factura.tiempo_pago }})</div>
+        <div class="header-grid">
+            <div class="box">
+                <h3>Emisor</h3>
+                <p><strong>Razón social:</strong> {{ factura.razon_social }}</p>
+                <p><strong>RUC:</strong> {{ factura.ruc }}</p>
+                <p><strong>Dirección:</strong> {{ factura.direccion }}</p>
+            </div>
+            <div class="box">
+                <h3>Comprobante</h3>
+                <p><strong>Número:</strong> {{ factura.numero_factura }}</p>
+                <p><strong>Fecha emisión:</strong> {{ factura.fecha_emision }}</p>
+                <p><strong>Autorización:</strong></p>
+                <p class="long-text">{{ factura.numero_autorizacion }}</p>
+                <p><strong>Clave acceso:</strong></p>
+                <p class="long-text">{{ factura.clave_acceso }}</p>
+            </div>
+            <div class="box">
+                <h3>Cliente</h3>
+                <p><strong>Nombre:</strong> {{ factura.cliente_nombre }}</p>
+                <p><strong>Identificación:</strong> {{ factura.cliente_identificacion }}</p>
+                <p><strong>Dirección:</strong> {{ factura.cliente_direccion }}</p>
+                <p><strong>Correo:</strong> {{ factura.correo }}</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>P. Unitario</th>
+                <th>Descuento</th>
+                <th>Total sin Impuestos</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for detalle in detalles %}
+            <tr>
+                <td>{{ detalle.codigo }}</td>
+                <td>{{ detalle.descripcion }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>${{ detalle.precio_unitario }}</td>
+                <td>${{ detalle.descuento }}</td>
+                <td>${{ detalle.total_sin_impuestos }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Sin productos.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totales">
+            <div class="box"><strong>Subtotal 0%:</strong> ${{ factura.subtotal_0 }}</div>
+            <div class="box"><strong>Subtotal 12%:</strong> ${{ factura.subtotal_12 }}</div>
+            <div class="box"><strong>IVA 12%:</strong> ${{ factura.iva }}</div>
+            <div class="box"><strong>Descuento total:</strong> ${{ factura.total_descuento }}</div>
+            <div class="box"><strong>Total:</strong> ${{ factura.total }}</div>
+            <div class="box"><strong>Forma pago:</strong> {{ factura.forma_pago }} ({{ factura.tiempo_pago }})</div>
+        </div>
     </div>
 </div>
 </body>
