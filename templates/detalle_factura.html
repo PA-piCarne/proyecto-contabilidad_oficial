@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Factura</title>
+    <link rel="stylesheet" href="{% static 'css/glassmorphism.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'img/fondo2.jpg' %}");
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(140, 0, 255, 0.5), rgba(255, 0, 200, 0.45));
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+        .header-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .box { border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; padding: 12px; background: rgba(0,0,0,0.2); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid rgba(255,255,255,0.35); padding: 8px; font-size: 13px; }
+        .totales { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            background: linear-gradient(45deg, #8c00ff, #ff00c8);
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 10px;
+        }
+        @media print {
+            body { background: #fff; color: #000; }
+            .container { background: #fff; color: #000; box-shadow: none; }
+            .btn { display: none; }
+            .box, th, td { border-color: #000; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Factura Electrónica</h1>
+
+    <a href="{% url 'buscar_factura' %}" class="btn">Buscar más facturas</a>
+    <a href="{% url 'menu_principal' %}" class="btn">Volver al menú</a>
+    <button class="btn" onclick="window.print()">Imprimir factura</button>
+
+    <div class="header-grid">
+        <div class="box">
+            <h3>Emisor</h3>
+            <p><strong>Razón social:</strong> {{ factura.razon_social }}</p>
+            <p><strong>RUC:</strong> {{ factura.ruc }}</p>
+            <p><strong>Dirección:</strong> {{ factura.direccion }}</p>
+        </div>
+        <div class="box">
+            <h3>Comprobante</h3>
+            <p><strong>Número:</strong> {{ factura.numero_factura }}</p>
+            <p><strong>Fecha emisión:</strong> {{ factura.fecha_emision }}</p>
+            <p><strong>Autorización:</strong> {{ factura.numero_autorizacion }}</p>
+            <p><strong>Clave acceso:</strong> {{ factura.clave_acceso }}</p>
+        </div>
+        <div class="box">
+            <h3>Cliente</h3>
+            <p><strong>Nombre:</strong> {{ factura.cliente_nombre }}</p>
+            <p><strong>Identificación:</strong> {{ factura.cliente_identificacion }}</p>
+            <p><strong>Dirección:</strong> {{ factura.cliente_direccion }}</p>
+            <p><strong>Correo:</strong> {{ factura.correo }}</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>P. Unitario</th>
+            <th>Descuento</th>
+            <th>Total sin Impuestos</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for detalle in detalles %}
+        <tr>
+            <td>{{ detalle.codigo }}</td>
+            <td>{{ detalle.descripcion }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>${{ detalle.precio_unitario }}</td>
+            <td>${{ detalle.descuento }}</td>
+            <td>${{ detalle.total_sin_impuestos }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Sin productos.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totales">
+        <div class="box"><strong>Subtotal 0%:</strong> ${{ factura.subtotal_0 }}</div>
+        <div class="box"><strong>Subtotal 12%:</strong> ${{ factura.subtotal_12 }}</div>
+        <div class="box"><strong>IVA 12%:</strong> ${{ factura.iva }}</div>
+        <div class="box"><strong>Descuento total:</strong> ${{ factura.total_descuento }}</div>
+        <div class="box"><strong>Total:</strong> ${{ factura.total }}</div>
+        <div class="box"><strong>Forma pago:</strong> {{ factura.forma_pago }} ({{ factura.tiempo_pago }})</div>
+    </div>
+</div>
+</body>
+</html>

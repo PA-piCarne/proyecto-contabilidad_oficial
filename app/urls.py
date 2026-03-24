@@ -11,6 +11,9 @@ urlpatterns = [
     path('empleados/', views.modulo_empleados, name='modulo_empleados'),
     path('rol-pagos/', views.modulo_rol_pagos, name='modulo_rol_pagos'),
     path('rol-pagos/guardar/', views.guardar_rol_pagos, name='guardar_rol_pagos'),
+    path('facturacion/generar/', views.generar_factura, name='generar_factura'),
+    path('facturacion/buscar/', views.buscar_factura, name='buscar_factura'),
+    path('facturacion/<int:id>/', views.detalle_factura, name='detalle_factura'),
     path('password_reset/', views.password_reset, name='password_reset'),
     path('meme/', views.meme, name='meme'),
 ]

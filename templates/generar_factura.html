@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Factura</title>
+    <link rel="stylesheet" href="{% static 'css/glassmorphism.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'img/fondo2.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(140, 0, 255, 0.5), rgba(255, 0, 200, 0.45));
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+        .section-title { margin: 20px 0 10px; font-size: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        label { display: block; font-size: 13px; margin-bottom: 4px; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        option { color: #000; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td {
+            border: 1px solid rgba(255,255,255,0.35);
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;
+        }
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            background: linear-gradient(45deg, #8c00ff, #ff00c8);
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .btn-danger { background: linear-gradient(45deg, #ff4d4d, #ff1a75); }
+        .btn-secondary { background: linear-gradient(45deg, #2f80ed, #56ccf2); }
+        .totals {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .message {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.35);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Generar Factura Electrónica</h1>
+    <a class="btn btn-secondary" href="{% url 'menu_principal' %}">Volver al menú</a>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" id="factura-form">
+        {% csrf_token %}
+        <h2 class="section-title">Datos del emisor</h2>
+        <div class="grid">
+            <div><label>Razón social</label>{{ form.razon_social }}</div>
+            <div><label>RUC</label>{{ form.ruc }}</div>
+            <div><label>Dirección</label>{{ form.direccion }}</div>
+            <div><label>Establecimiento</label>{{ form.establecimiento }}</div>
+            <div><label>Punto emisión</label>{{ form.punto_emision }}</div>
+            <div><label>Fecha emisión</label>{{ form.fecha_emision }}</div>
+        </div>
+
+        <h2 class="section-title">Datos del cliente</h2>
+        <div class="grid">
+            <div><label>Nombre</label>{{ form.cliente_nombre }}</div>
+            <div><label>Identificación</label>{{ form.cliente_identificacion }}</div>
+            <div><label>Tipo identificación</label>{{ form.tipo_identificacion }}</div>
+            <div><label>Dirección</label>{{ form.cliente_direccion }}</div>
+            <div><label>Correo</label>{{ form.correo }}</div>
+            <div><label>Teléfono</label>{{ form.telefono }}</div>
+        </div>
+
+        <h2 class="section-title">Pago</h2>
+        <div class="grid">
+            <div><label>Forma de pago</label>{{ form.forma_pago }}</div>
+            <div><label>Tiempo de pago</label>{{ form.tiempo_pago }}</div>
+        </div>
+
+        <h2 class="section-title">Productos</h2>
+        {{ formset.management_form }}
+        <table id="detalle-table">
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Descuento</th>
+                <th>Total sin Impuestos</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for detalle_form in formset %}
+                <tr class="detalle-row">
+                    <td>{{ detalle_form.codigo }}</td>
+                    <td>{{ detalle_form.descripcion }}</td>
+                    <td>{{ detalle_form.cantidad }}</td>
+                    <td>{{ detalle_form.precio_unitario }}</td>
+                    <td>{{ detalle_form.descuento }}</td>
+                    <td>{{ detalle_form.total_sin_impuestos }}</td>
+                    <td>
+                        {{ detalle_form.DELETE }}
+                        <button type="button" class="btn btn-danger btn-remove">Quitar</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn" id="agregar-producto">Agregar producto</button>
+
+        <div class="totals">
+            <div>Subtotal 12%: <strong id="subtotal12">0.00</strong></div>
+            <div>IVA 12%: <strong id="iva">0.00</strong></div>
+            <div>Total descuento: <strong id="descuento">0.00</strong></div>
+            <div>Total: <strong id="total">0.00</strong></div>
+        </div>
+
+        <button type="submit" class="btn">Guardar factura</button>
+    </form>
+</div>
+
+<script>
+(function() {
+    const tableBody = document.querySelector('#detalle-table tbody');
+    const totalForms = document.getElementById('id_detalles-TOTAL_FORMS');
+
+    function toNumber(value) {
+        const number = parseFloat(value);
+        return isNaN(number) ? 0 : number;
+    }
+
+    function calcularTotales() {
+        let subtotal12 = 0;
+        let descuentoTotal = 0;
+
+        document.querySelectorAll('.detalle-row').forEach((row) => {
+            if (row.style.display === 'none') {
+                return;
+            }
+            const cantidad = toNumber(row.querySelector('[name$="-cantidad"]').value);
+            const precio = toNumber(row.querySelector('[name$="-precio_unitario"]').value);
+            const descuento = toNumber(row.querySelector('[name$="-descuento"]').value);
+            const totalLinea = Math.max((cantidad * precio) - descuento, 0);
+
+            row.querySelector('[name$="-total_sin_impuestos"]').value = totalLinea.toFixed(2);
+            subtotal12 += totalLinea;
+            descuentoTotal += descuento;
+        });
+
+        const iva = subtotal12 * 0.12;
+        const total = subtotal12 + iva;
+
+        document.getElementById('subtotal12').innerText = subtotal12.toFixed(2);
+        document.getElementById('iva').innerText = iva.toFixed(2);
+        document.getElementById('descuento').innerText = descuentoTotal.toFixed(2);
+        document.getElementById('total').innerText = total.toFixed(2);
+    }
+
+    function attachEvents(row) {
+        row.querySelectorAll('input').forEach((input) => {
+            input.addEventListener('input', calcularTotales);
+        });
+
+        row.querySelector('.btn-remove').addEventListener('click', function() {
+            const deleteInput = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+            if (deleteInput) {
+                deleteInput.checked = true;
+            }
+            row.style.display = 'none';
+            calcularTotales();
+        });
+    }
+
+    document.querySelectorAll('.detalle-row').forEach(attachEvents);
+
+    document.getElementById('agregar-producto').addEventListener('click', function() {
+        const index = parseInt(totalForms.value, 10);
+        const template = document.querySelector('.detalle-row').cloneNode(true);
+
+        template.querySelectorAll('input').forEach((input) => {
+            input.name = input.name.replace(/detalles-\d+-/, `detalles-${index}-`);
+            input.id = input.id.replace(/detalles-\d+-/, `detalles-${index}-`);
+            if (input.type === 'checkbox') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+        });
+
+        template.style.display = '';
+        tableBody.appendChild(template);
+        totalForms.value = index + 1;
+        attachEvents(template);
+        calcularTotales();
+    });
+
+    calcularTotales();
+})();
+</script>
+</body>
+</html>
