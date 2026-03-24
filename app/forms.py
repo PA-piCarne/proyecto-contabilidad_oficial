@@ -15,7 +15,7 @@ class RegistroForm(UserCreationForm):
             'placeholder': 'Ej: 0991234567',
             'pattern': '[0-9]{10}',
             'maxlength': '10',
-            'title': 'Ingrese exactamente 10 números',
+            'title': 'Ingrese exactamente 10 numeros',
         })
     )
 
@@ -39,7 +39,7 @@ class RegistroForm(UserCreationForm):
         telefono = self.cleaned_data.get('telefono')
 
         if not re.fullmatch(r'\d{10}', telefono):
-            raise ValidationError("El teléfono debe tener exactamente 10 números.")
+            raise ValidationError('El telefono debe tener exactamente 10 numeros.')
 
         return telefono
 
@@ -47,13 +47,23 @@ class RegistroForm(UserCreationForm):
 class EmpleadoForm(forms.ModelForm):
     class Meta:
         model = Empleado
-        fields = ['apellidos_nombres', 'cedula_pasaporte', 'cargo', 'fecha_ingreso', 'sueldo']
+        fields = [
+            'apellidos_nombres',
+            'cedula_pasaporte',
+            'cargo',
+            'fecha_ingreso',
+            'sueldo',
+            'decimo_tercer_sueldo_modalidad',
+            'decimo_cuarto_sueldo_modalidad',
+        ]
         widgets = {
-            'apellidos_nombres': forms.TextInput(attrs={'placeholder': 'Ej: Juan Pérez'}),
+            'apellidos_nombres': forms.TextInput(attrs={'placeholder': 'Ej: Juan Perez'}),
             'cedula_pasaporte': forms.TextInput(attrs={'placeholder': 'Ej: 1723456789'}),
             'cargo': forms.TextInput(attrs={'placeholder': 'Ej: MENSAJERO'}),
             'fecha_ingreso': forms.DateInput(attrs={'type': 'date'}),
             'sueldo': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),
+            'decimo_tercer_sueldo_modalidad': forms.Select(),
+            'decimo_cuarto_sueldo_modalidad': forms.Select(),
         }
 
     def clean_sueldo(self):

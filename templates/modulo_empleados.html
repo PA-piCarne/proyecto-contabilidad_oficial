@@ -43,7 +43,7 @@
             font-size: 14px;
         }
 
-        input {
+        input, select {
             width: 100%;
             box-sizing: border-box;
             border: none;
@@ -151,16 +151,10 @@
                 {{ form.sueldo }}
 
                 <label>¿Prefiere recibir su décimo tercer sueldo de manera anual o mensual?</label>
-                <select name="decimo_tercer_sueldo_modalidad">
-                    <option value="anual">Anual</option>
-                    <option value="mensual">Mensual</option>
-                </select>
+                {{ form.decimo_tercer_sueldo_modalidad }}
 
                 <label>¿Prefiere recibir su décimo cuarto sueldo de manera anual o mensual?</label>
-                <select name="decimo_cuarto_sueldo_modalidad">
-                    <option value="anual">Anual</option>
-                    <option value="mensual">Mensual</option>
-                </select>
+                {{ form.decimo_cuarto_sueldo_modalidad }}
 
                 <div class="btns">
                     <button class="btn" type="submit">{% if empleado_edicion %}Actualizar{% else %}Guardar{% endif %}</button>
@@ -288,3 +282,4 @@
     </script>
 </body>
 </html>
+

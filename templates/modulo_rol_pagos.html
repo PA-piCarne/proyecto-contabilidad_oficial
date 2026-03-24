@@ -346,17 +346,6 @@
         function calcularDecimos(fila, sueldo, bonificacion, horas) {
             const baseDecimo = sueldo + bonificacion + horas;
             const decimo = baseDecimo / 12;
-            const cuarto = sueldo / 12;
-            fila.querySelector('.decimo').value = formatMoney(decimo);
-            fila.querySelector('.cuarto').value = formatMoney(cuarto);
-            return { decimo, cuarto };
-        }
-
-        function calcularFila(fila) {
-            const sueldo = toNumber(fila.querySelector('.sueldo').value);
-            const bonificacion = toNumber(fila.querySelector('.bonificacion').value);
-            const transporte = toNumber(fila.querySelector('.transporte').value);
-            const alimentacion = toNumber(fila.querySelector('.alimentacion').value);
             const fondos = toNumber(fila.querySelector('.fondos').value);
             const vacaciones = toNumber(fila.querySelector('.vacaciones').value);
             const horas = toNumber(fila.querySelector('.horas').value);
