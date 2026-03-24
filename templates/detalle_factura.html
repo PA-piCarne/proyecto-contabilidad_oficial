@@ -19,22 +19,26 @@
         .container {
             max-width: 1180px;
             margin: 0 auto;
-            padding: 15px;
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(140, 0, 255, 0.45), rgba(255, 0, 200, 0.35));
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
         }
         .toolbar {
             margin-bottom: 15px;
         }
         .invoice-paper {
             border-radius: 16px;
-            padding: 24px;
-            background: #ffffff;
-            color: #222;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: #fff;
         }
         .invoice-title {
             margin: 0 0 15px;
-            color: #222;
-            font-size: 28px;
+            color: #fff;
+            font-size: 40px;
         }
         .header-grid {
             display: grid;
@@ -42,31 +46,31 @@
             gap: 16px;
         }
         .box {
-            border: 1px solid #b7b7b7;
+            border: 1px solid rgba(255,255,255,0.35);
             border-radius: 12px;
             padding: 14px;
-            background: #f8f8f8;
+            background: rgba(0,0,0,0.20);
             min-height: 230px;
         }
         .box h3 {
             margin-top: 0;
-            color: #222;
+            color: #fff;
             font-size: 30px;
         }
         .box p {
-            font-size: 20px;
+            font-size: 17px;
             margin: 10px 0;
-            color: #2d2d2d;
+            color: #fff;
         }
         .long-text {
             font-family: monospace;
             word-break: break-all;
             overflow-wrap: anywhere;
-            font-size: 17px !important;
+            font-size: 14px !important;
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 18px; color: #222; }
-        th, td { border: 1px solid #b7b7b7; padding: 9px; font-size: 14px; }
-        th { background: #efefef; }
+        table { width: 100%; border-collapse: collapse; margin-top: 18px; color: #fff; }
+        th, td { border: 1px solid rgba(255,255,255,0.35); padding: 9px; font-size: 14px; }
+        th { background: rgba(0,0,0,0.3); }
         .totales {
             margin-top: 15px;
             display: grid;
@@ -75,6 +79,7 @@
         }
         .totales .box {
             min-height: auto;
+            background: rgba(0,0,0,0.3);
         }
         .btn {
             border: none;
@@ -116,6 +121,8 @@
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0;
+                background: #fff !important;
+                border: 0 !important;
             }
             .toolbar,
             .btn { display: none !important; }
@@ -123,13 +130,20 @@
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0;
+                background: #fff !important;
+                border: 0 !important;
             }
             .box {
                 border-color: #111;
                 background: #fff;
                 break-inside: avoid;
             }
+            .invoice-title {
+                color: #111 !important;
+                font-size: 24px;
+            }
             th, td { border-color: #111; }
+            th { background: #efefef !important; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; }
         }
