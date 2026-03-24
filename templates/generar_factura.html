@@ -28,7 +28,7 @@
         }
         .section-title { margin: 20px 0 10px; font-size: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-        label { display: block; font-size: 13px; margin-bottom: 4px; }
+        label { display: block; font-size: 14px; margin-bottom: 4px; }
         input, select {
             width: 100%;
             padding: 10px;
@@ -36,14 +36,36 @@
             border: 1px solid rgba(255,255,255,0.5);
             background: rgba(255,255,255,0.1);
             color: #fff;
+            box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.3;
         }
         option { color: #000; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
         th, td {
             border: 1px solid rgba(255,255,255,0.35);
             padding: 8px;
             text-align: left;
-            font-size: 13px;
+            font-size: 14px;
+            vertical-align: top;
+        }
+        th { font-weight: 700; }
+        #detalle-table td input {
+            min-width: 120px;
+            margin: 0;
+        }
+        #detalle-table td:first-child input { min-width: 90px; }
+        #detalle-table td:nth-child(2) input { min-width: 190px; }
+        #detalle-table td:last-child {
+            white-space: nowrap;
+            min-width: 110px;
+        }
+        .delete-field {
+            display: none;
         }
         .btn {
             border: none;
@@ -113,35 +135,37 @@
 
         <h2 class="section-title">Productos</h2>
         {{ formset.management_form }}
-        <table id="detalle-table">
-            <thead>
-            <tr>
-                <th>Código</th>
-                <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Descuento</th>
-                <th>Total sin Impuestos</th>
-                <th>Acción</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for detalle_form in formset %}
-                <tr class="detalle-row">
-                    <td>{{ detalle_form.codigo }}</td>
-                    <td>{{ detalle_form.descripcion }}</td>
-                    <td>{{ detalle_form.cantidad }}</td>
-                    <td>{{ detalle_form.precio_unitario }}</td>
-                    <td>{{ detalle_form.descuento }}</td>
-                    <td>{{ detalle_form.total_sin_impuestos }}</td>
-                    <td>
-                        {{ detalle_form.DELETE }}
-                        <button type="button" class="btn btn-danger btn-remove">Quitar</button>
-                    </td>
+        <div class="table-wrap">
+            <table id="detalle-table">
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Descuento</th>
+                    <th>Total sin Impuestos</th>
+                    <th>Acción</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for detalle_form in formset %}
+                    <tr class="detalle-row">
+                        <td>{{ detalle_form.codigo }}</td>
+                        <td>{{ detalle_form.descripcion }}</td>
+                        <td>{{ detalle_form.cantidad }}</td>
+                        <td>{{ detalle_form.precio_unitario }}</td>
+                        <td>{{ detalle_form.descuento }}</td>
+                        <td>{{ detalle_form.total_sin_impuestos }}</td>
+                        <td>
+                            <span class="delete-field">{{ detalle_form.DELETE }}</span>
+                            <button type="button" class="btn btn-danger btn-remove">Quitar</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <button type="button" class="btn" id="agregar-producto">Agregar producto</button>
 
