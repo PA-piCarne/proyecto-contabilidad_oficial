@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Factura</title>
+    <link rel="stylesheet" href="{% static 'css/glassmorphism.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'img/fondo2.jpg' %}");
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(140, 0, 255, 0.5), rgba(255, 0, 200, 0.45));
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            background: linear-gradient(45deg, #8c00ff, #ff00c8);
+            display: inline-block;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid rgba(255,255,255,0.35); padding: 8px; font-size: 13px; }
+        .message { border-radius: 10px; padding: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.35); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Buscar Factura</h1>
+    <a class="btn" href="{% url 'menu_principal' %}">Volver al menú</a>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="get">
+        <label for="numero_factura">Número de factura</label>
+        <input type="text" id="numero_factura" name="numero_factura" value="{{ termino }}" placeholder="001-001-000000001">
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    {% if resultados %}
+    <table>
+        <thead>
+        <tr>
+            <th>Número</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for factura in resultados %}
+        <tr>
+            <td>{{ factura.numero_factura }}</td>
+            <td>{{ factura.fecha_emision }}</td>
+            <td>{{ factura.cliente_nombre }}</td>
+            <td>${{ factura.total }}</td>
+            <td><a class="btn" href="{% url 'detalle_factura' factura.id %}">Ver detalle</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+</body>
+</html>
