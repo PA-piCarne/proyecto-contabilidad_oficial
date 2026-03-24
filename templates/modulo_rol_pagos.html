@@ -343,23 +343,13 @@
             });
         }
 
-        function calcularDecimos(fila, sueldo) {
-            const decimo = sueldo / 12;
-            const cuarto = sueldo / 12;
-            fila.querySelector('.decimo').value = formatMoney(decimo);
-            fila.querySelector('.cuarto').value = formatMoney(cuarto);
-            return { decimo, cuarto };
-        }
-
-        function calcularFila(fila) {
-            const sueldo = toNumber(fila.querySelector('.sueldo').value);
-            const bonificacion = toNumber(fila.querySelector('.bonificacion').value);
-            const transporte = toNumber(fila.querySelector('.transporte').value);
-            const alimentacion = toNumber(fila.querySelector('.alimentacion').value);
-            const { decimo, cuarto } = calcularDecimos(fila, sueldo);
+        function calcularDecimos(fila, sueldo, bonificacion, horas) {
+            const baseDecimo = sueldo + bonificacion + horas;
+            const decimo = baseDecimo / 12;
             const fondos = toNumber(fila.querySelector('.fondos').value);
             const vacaciones = toNumber(fila.querySelector('.vacaciones').value);
             const horas = toNumber(fila.querySelector('.horas').value);
+            const { decimo, cuarto } = calcularDecimos(fila, sueldo, bonificacion, horas);
             const prestamo = toNumber(fila.querySelector('.prestamo').value);
             const renta = toNumber(fila.querySelector('.renta').value);
             const seguro = toNumber(fila.querySelector('.seguro').value);
