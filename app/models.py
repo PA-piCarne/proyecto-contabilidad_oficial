@@ -20,11 +20,26 @@ class Usuario(AbstractUser):
 
 
 class Empleado(models.Model):
+    MODALIDAD_DECIMO_CHOICES = [
+        ('anual', 'Anual'),
+        ('mensual', 'Mensual'),
+    ]
+
     apellidos_nombres = models.CharField(max_length=200)
     cedula_pasaporte = models.CharField(max_length=20, unique=True)
     cargo = models.CharField(max_length=120)
     fecha_ingreso = models.DateField()
     sueldo = models.DecimalField(max_digits=10, decimal_places=2)
+    decimo_tercer_sueldo_modalidad = models.CharField(
+        max_length=10,
+        choices=MODALIDAD_DECIMO_CHOICES,
+        default='anual',
+    )
+    decimo_cuarto_sueldo_modalidad = models.CharField(
+        max_length=10,
+        choices=MODALIDAD_DECIMO_CHOICES,
+        default='anual',
+    )
 
     class Meta:
         ordering = ['id']
