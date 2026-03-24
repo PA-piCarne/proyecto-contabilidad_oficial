@@ -1,7 +1,9 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 
     <style>
@@ -11,15 +13,25 @@
             background-image: url("{% static 'img/fondo2.jpg' %}");
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
+            overflow: hidden;
+        }
+
+        body::after{
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.16), transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.12), transparent 45%);
+            pointer-events: none;
         }
 
         /* ===== NAVBAR ===== */
         .navbar{
-            width: 95%;
+            width: min(95%, 1150px);
             margin: 20px auto 0 auto;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
@@ -29,6 +41,7 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            z-index: 2;
         }
 
         .navbar h2{
@@ -36,6 +49,7 @@
             margin: 0;
             font-size: 22px;
             font-weight: 600;
+            letter-spacing: 0.4px;
         }
 
         .nav-buttons{
@@ -56,7 +70,7 @@
 
         .nav-buttons a:hover{
             background: rgba(255,255,255,0.4);
-            transform: scale(1.05);
+            transform: translateY(-2px) scale(1.03);
         }
 
         /* ===== CONTENIDO CENTRAL ===== */
@@ -66,16 +80,109 @@
             justify-content: center;
             align-items: center;
             color: white;
+            z-index: 2;
+            padding: 20px;
         }
 
         .box{
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
-            padding: 60px;
+            padding: 55px;
             border-radius: 20px;
             text-align: center;
-            width: 400px;
+            width: min(90vw, 520px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .box:hover{
+            transform: translateY(-4px);
+            box-shadow: 0 14px 38px rgba(0,0,0,0.35);
+        }
+
+        .box h1{
+            margin: 0;
+            font-size: clamp(34px, 5vw, 44px);
+        }
+
+        .typing{
+            margin-top: 18px;
+            font-size: 17px;
+            min-height: 25px;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .highlights{
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .chip{
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.26);
+            border-radius: 12px;
+            padding: 10px 8px;
+            font-size: 13px;
+            transition: 0.25s ease;
+        }
+
+        .chip:hover{
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .actions{
+            margin-top: 26px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .actions a{
+            text-decoration: none;
+            color: white;
+            border-radius: 12px;
+            padding: 11px 20px;
+            font-weight: 600;
+            transition: 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .actions .primary{
+            background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,255,255,0.2));
+        }
+
+        .actions .secondary{
+            background: rgba(255,255,255,0.12);
+        }
+
+        .actions a:hover{
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .floating-dot{
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.45);
+            animation: float 9s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .dot-1{ top: 22%; left: 10%; animation-delay: 0s; }
+        .dot-2{ top: 70%; left: 22%; animation-delay: 1.2s; }
+        .dot-3{ top: 33%; right: 12%; animation-delay: 2.2s; }
+        .dot-4{ top: 78%; right: 25%; animation-delay: 3.2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); opacity: 0.35; }
+            50% { transform: translateY(-14px); opacity: 0.9; }
         }
 
         /* ===== TEXTO SECRETO ABAJO DERECHA ===== */
@@ -84,9 +191,10 @@
             bottom: 20px;
             right: 25px;
             font-size: 15px;
-            color: #ffb6d9; /* rosado suave */
+            color: #ffb6d9;
             text-decoration: none;
             transition: 0.3s;
+            z-index: 2;
         }
 
         .secret-link:hover{
@@ -94,11 +202,22 @@
             text-decoration: underline;
         }
 
+        @media (max-width: 640px){
+            .navbar{ padding: 16px 18px; flex-direction: column; gap: 12px; }
+            .box{ padding: 38px 24px; }
+            .highlights{ grid-template-columns: 1fr; }
+        }
+
     </style>
     <link rel="stylesheet" href="{% static 'css/glassmorphism.css' %}">
 </head>
 
 <body>
+
+    <div class="floating-dot dot-1"></div>
+    <div class="floating-dot dot-2"></div>
+    <div class="floating-dot dot-3"></div>
+    <div class="floating-dot dot-4"></div>
 
     <div class="navbar">
         <h2>Proyecto Contabilidad</h2>
@@ -110,9 +229,20 @@
     </div>
 
     <div class="container">
-        <div class="box">
+        <div class="box" id="home-card">
             <h1>Bienvenido</h1>
-            <p>Gestiona tu sistema contable de forma rápida y segura.</p>
+            <p class="typing" id="typing-text">Gestiona tu sistema contable de forma rápida y segura.</p>
+
+            <div class="highlights">
+                <div class="chip">Control de facturas</div>
+                <div class="chip">Gestión de empleados</div>
+                <div class="chip">Rol de pagos ágil</div>
+            </div>
+
+            <div class="actions">
+                <a class="primary" href="{% url 'login' %}">Entrar ahora</a>
+                <a class="secondary" href="{% url 'register' %}">Crear cuenta</a>
+            </div>
         </div>
     </div>
 
@@ -120,6 +250,38 @@
     <a href="{% url 'meme' %}" class="secret-link">
         Solo hacer click si es el Inge
     </a>
+
+    <script>
+        const messages = [
+            'Gestiona tu sistema contable de forma rápida y segura.',
+            'Centraliza tus procesos financieros en un solo lugar.',
+            'Mantén tus operaciones siempre bajo control.'
+        ];
+
+        const typingText = document.getElementById('typing-text');
+        let messageIndex = 0;
+
+        setInterval(() => {
+            messageIndex = (messageIndex + 1) % messages.length;
+            typingText.style.opacity = '0';
+            setTimeout(() => {
+                typingText.textContent = messages[messageIndex];
+                typingText.style.opacity = '1';
+            }, 250);
+        }, 2800);
+
+        const card = document.getElementById('home-card');
+        card.addEventListener('mousemove', (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform = `rotateX(${(-y * 4).toFixed(2)}deg) rotateY(${(x * 4).toFixed(2)}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0) rotateY(0)';
+        });
+    </script>
 
 </body>
 </html>
