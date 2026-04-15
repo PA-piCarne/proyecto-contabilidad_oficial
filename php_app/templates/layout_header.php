@@ -19,6 +19,7 @@
 <div class="container">
   <div class="nav">
     <a href="/?page=home">Inicio</a>
+    <a href="/?page=status">Estado</a>
     <?php if (current_user()): ?>
       <a href="/?page=menu">Menú</a>
       <a href="/?page=logout">Salir</a>
