@@ -1,6 +1,15 @@
 <h2>Estado del sistema</h2>
-<p><strong>Motor detectado:</strong> PHP <?= e(PHP_VERSION) ?></p>
-<p><strong>SAPI:</strong> <?= e(PHP_SAPI) ?></p>
+
+<div class="kpi">
+  <div class="item">
+    <div class="label">Motor detectado</div>
+    <div class="value">PHP <?= e(PHP_VERSION) ?></div>
+  </div>
+  <div class="item">
+    <div class="label">SAPI</div>
+    <div class="value"><?= e(PHP_SAPI) ?></div>
+  </div>
+</div>
 
 <?php
 $dbOk = null;
@@ -19,8 +28,8 @@ if (isset($_GET['check_db']) && $_GET['check_db'] === '1') {
 }
 ?>
 
-<p>
-  <a href="/?page=status&check_db=1">Probar conexión MySQL ahora</a>
+<p class="mt">
+  <a class="btn" href="/?page=status&check_db=1">Probar conexión MySQL ahora</a>
 </p>
 
 <?php if ($dbOk === true): ?>

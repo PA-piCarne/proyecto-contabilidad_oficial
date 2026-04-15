@@ -10,6 +10,12 @@ function db(): PDO
         return $pdo;
     }
 
+    if (!extension_loaded('pdo_mysql')) {
+        throw new RuntimeException(
+            "Falta el driver pdo_mysql. Habilita la extensión en php.ini (extension=pdo_mysql) y reinicia el servidor PHP."
+        );
+    }
+
     $host = getenv('DB_HOST') ?: '127.0.0.1';
     $port = getenv('DB_PORT') ?: '3306';
     $name = getenv('DB_NAME') ?: 'contabilidad';

@@ -65,5 +65,82 @@ Se agregó una versión en **PHP puro** del sistema para cubrir lo solicitado en
 - El front controller principal es `php_app/public/index.php`.
 - La pantalla `/?page=status` muestra versión de PHP activa y permite probar conexión real a MySQL.
 
+## Solución al error en Windows: `php no se reconoce`
+Si PowerShell te muestra:
+`php : El término 'php' no se reconoce...`
+significa que **PHP no está instalado** o **no está agregado al PATH**.
+
+### Opción A (recomendada): instalar PHP con Winget
+1. Abre PowerShell como administrador.
+2. Instala PHP:
+   ```powershell
+   winget install PHP.PHP
+   ```
+3. Cierra y vuelve a abrir PowerShell.
+4. Verifica:
+   ```powershell
+   php -v
+   ```
+5. Si ya funciona, arranca servidor:
+   ```powershell
+   php -S 127.0.0.1:8000 -t php_app/public
+   ```
+
+### Opción B: usar XAMPP (si ya lo tienes)
+1. Revisa si existe `C:\xampp\php\php.exe`.
+2. Arranca así, usando ruta completa:
+   ```powershell
+   C:\xampp\php\php.exe -S 127.0.0.1:8000 -t php_app/public
+   ```
+3. Si funciona, agrega `C:\xampp\php` al PATH de Windows para poder usar `php` directamente.
+
+### Opción C: instalación manual de PHP
+1. Descarga PHP para Windows (zip) desde: https://windows.php.net/download/
+2. Descomprime, por ejemplo en `C:\php`.
+3. Agrega `C:\php` al PATH del sistema.
+4. Abre una nueva consola y ejecuta:
+   ```powershell
+   php -v
+   php -S 127.0.0.1:8000 -t php_app/public
+   ```
+
+### Verificación final
+Cuando el servidor arranque, abre:
+- `http://127.0.0.1:8000/?page=status`
+
+Si ves versión de PHP y el estado del sistema, ya quedó correcto.
+
+
+## Error: `could not find driver` (PDO MySQL)
+Ese mensaje significa que PHP sí está corriendo, pero **no tiene habilitado el driver `pdo_mysql`**.
+
+### Cómo arreglarlo en Windows (XAMPP)
+1. Abre el archivo `C:\xampp\php\php.ini`.
+2. Busca estas líneas y asegúrate de que estén activas (sin `;` al inicio):
+   ```ini
+   extension=pdo_mysql
+   extension=mysqli
+   ```
+3. Guarda y reinicia Apache (o reinicia tu `php -S ...` si usas servidor embebido).
+4. Verifica en consola:
+   ```powershell
+   php -m | findstr /I "pdo pdo_mysql mysqli"
+   ```
+5. Debes ver `PDO`, `pdo_mysql` y/o `mysqli` listados.
+
+### Si usas PHP instalado con Winget
+1. Ubica el `php.ini` activo:
+   ```powershell
+   php --ini
+   ```
+2. Edita ese `php.ini` y habilita:
+   ```ini
+   extension=pdo_mysql
+   ```
+3. Reinicia terminal y vuelve a levantar:
+   ```powershell
+   php -S 127.0.0.1:8000 -t php_app/public
+   ```
+
 ## Nota
 La base Django original se mantuvo en el repositorio para referencia, pero la nueva implementación PHP es funcional para el flujo de autenticación solicitado.
