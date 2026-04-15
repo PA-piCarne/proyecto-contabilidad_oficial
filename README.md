@@ -110,5 +110,37 @@ Cuando el servidor arranque, abre:
 
 Si ves versión de PHP y el estado del sistema, ya quedó correcto.
 
+
+## Error: `could not find driver` (PDO MySQL)
+Ese mensaje significa que PHP sí está corriendo, pero **no tiene habilitado el driver `pdo_mysql`**.
+
+### Cómo arreglarlo en Windows (XAMPP)
+1. Abre el archivo `C:\xampp\php\php.ini`.
+2. Busca estas líneas y asegúrate de que estén activas (sin `;` al inicio):
+   ```ini
+   extension=pdo_mysql
+   extension=mysqli
+   ```
+3. Guarda y reinicia Apache (o reinicia tu `php -S ...` si usas servidor embebido).
+4. Verifica en consola:
+   ```powershell
+   php -m | findstr /I "pdo pdo_mysql mysqli"
+   ```
+5. Debes ver `PDO`, `pdo_mysql` y/o `mysqli` listados.
+
+### Si usas PHP instalado con Winget
+1. Ubica el `php.ini` activo:
+   ```powershell
+   php --ini
+   ```
+2. Edita ese `php.ini` y habilita:
+   ```ini
+   extension=pdo_mysql
+   ```
+3. Reinicia terminal y vuelve a levantar:
+   ```powershell
+   php -S 127.0.0.1:8000 -t php_app/public
+   ```
+
 ## Nota
 La base Django original se mantuvo en el repositorio para referencia, pero la nueva implementación PHP es funcional para el flujo de autenticación solicitado.
