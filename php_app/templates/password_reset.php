@@ -16,24 +16,35 @@ if ($step === 'question' && $email !== '') {
   <p><strong>Correo:</strong> <?= e($email) ?></p>
   <p><strong>Pregunta:</strong> <?= e($pregunta) ?></p>
 
-  <form method="post" action="/?page=password_reset">
+  <form method="post" action="/?page=password_reset" class="form-grid">
     <input type="hidden" name="step" value="question">
 
-    <label>Respuesta de seguridad</label>
-    <input type="text" name="respuesta_seguridad" required>
+    <div class="field full">
+      <label>Respuesta de seguridad</label>
+      <input type="text" name="respuesta_seguridad" required>
+    </div>
 
-    <label>Nueva contraseña</label>
-    <input type="password" name="nueva_password" required>
+    <div class="field full">
+      <label>Nueva contraseña</label>
+      <input type="password" name="nueva_password" required>
+    </div>
 
-    <button type="submit">Cambiar contraseña</button>
+    <div class="field full mt">
+      <button class="btn" type="submit">Cambiar contraseña</button>
+    </div>
   </form>
 <?php else: ?>
-  <form method="post" action="/?page=password_reset">
+  <p>Ingresa tu correo para validar tu identidad.</p>
+  <form method="post" action="/?page=password_reset" class="form-grid">
     <input type="hidden" name="step" value="email">
 
-    <label>Correo registrado</label>
-    <input type="email" name="email" required>
+    <div class="field full">
+      <label>Correo registrado</label>
+      <input type="email" name="email" required>
+    </div>
 
-    <button type="submit">Validar correo</button>
+    <div class="field full mt">
+      <button class="btn" type="submit">Validar correo</button>
+    </div>
   </form>
 <?php endif; ?>

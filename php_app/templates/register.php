@@ -1,30 +1,47 @@
 <h2>Registro</h2>
-<form method="post" action="/?page=register">
-  <label>Usuario</label>
-  <input type="text" name="username" required value="<?= old('username') ?>">
+<p>Crea tu cuenta para acceder al sistema.</p>
+<form method="post" action="/?page=register" class="form-grid">
+  <div class="field">
+    <label>Usuario</label>
+    <input type="text" name="username" required value="<?= old('username') ?>">
+  </div>
 
-  <label>Correo</label>
-  <input type="email" name="email" required value="<?= old('email') ?>">
+  <div class="field">
+    <label>Correo</label>
+    <input type="email" name="email" required value="<?= old('email') ?>">
+  </div>
 
-  <label>Teléfono (10 dígitos)</label>
-  <input type="text" name="telefono" pattern="[0-9]{10}" maxlength="10" required value="<?= old('telefono') ?>">
+  <div class="field">
+    <label>Teléfono (10 dígitos)</label>
+    <input type="text" name="telefono" pattern="[0-9]{10}" maxlength="10" required value="<?= old('telefono') ?>">
+  </div>
 
-  <label>Pregunta de seguridad</label>
-  <select name="pregunta_seguridad" required>
-    <option value="">Seleccione…</option>
-    <?php foreach (SECURITY_QUESTIONS as $key => $question): ?>
-      <option value="<?= e($key) ?>" <?= old('pregunta_seguridad') === $key ? 'selected' : '' ?>><?= e($question) ?></option>
-    <?php endforeach; ?>
-  </select>
+  <div class="field">
+    <label>Pregunta de seguridad</label>
+    <select name="pregunta_seguridad" required>
+      <option value="">Seleccione…</option>
+      <?php foreach (SECURITY_QUESTIONS as $key => $question): ?>
+        <option value="<?= e($key) ?>" <?= old('pregunta_seguridad') === $key ? 'selected' : '' ?>><?= e($question) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
 
-  <label>Respuesta de seguridad</label>
-  <input type="text" name="respuesta_seguridad" required value="<?= old('respuesta_seguridad') ?>">
+  <div class="field full">
+    <label>Respuesta de seguridad</label>
+    <input type="text" name="respuesta_seguridad" required value="<?= old('respuesta_seguridad') ?>">
+  </div>
 
-  <label>Contraseña</label>
-  <input type="password" name="password" required>
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" name="password" required>
+  </div>
 
-  <label>Confirmar contraseña</label>
-  <input type="password" name="password2" required>
+  <div class="field">
+    <label>Confirmar contraseña</label>
+    <input type="password" name="password2" required>
+  </div>
 
-  <button type="submit">Crear cuenta</button>
+  <div class="field full mt">
+    <button class="btn" type="submit">Crear cuenta</button>
+  </div>
 </form>
